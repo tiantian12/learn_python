@@ -1,1 +1,1 @@
-{"1222": {"pwd": "ffsd1", "login_num": 0}}
+{"1222": {"pwd": "ffsd1", "login_num": 0}, "tian": {"pwd": "123456", "login_num": 0}, "haha": {"pwd": "123456", "login_num": 1}}

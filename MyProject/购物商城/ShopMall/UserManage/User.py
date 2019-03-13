@@ -10,12 +10,14 @@ users.txt文件格式：
 
 """
 
-
+import sys,os
 import json
+#用户配置文件路径
+AccoutFile=os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.txt")
 
 class User(object):
     def __init__(self):
-        with open("users.txt","r+") as f:
+        with open(AccoutFile, "r+") as f:
             if not f.read():
                 json.dump({},f)
 
@@ -25,13 +27,14 @@ class User(object):
         locked=False
         msg=""
 
-        with open("users.txt","r+") as f:
+        with open(AccoutFile, "r+") as f:
             users = json.load(f)
             if not users:
                 msg="暂无账号数据，请先注册"
                 return login_flag,locked,msg
-            try:
-                if name in users and users[name]["login_num"]<=3:
+
+            if name in users:
+                if users[name]["login_num"]<=3:
                     if users[name]["pwd"]==pwd:
                         users[name]["login_num"]=0
                         login_flag=True
@@ -42,8 +45,8 @@ class User(object):
                 else:
                     locked=True
                     msg="你的账号已被锁定"
-            except KeyError:
-                msg="账号或密码错误，如无账号，请先注册"
+            else:
+                msg = "账号或密码错误，如无账号，请先注册"
 
             #更新登录次数数据
             f.seek(0)
@@ -57,7 +60,7 @@ class User(object):
         reg_status=False
         msg=""
 
-        with open("users.txt","r+") as f:
+        with open(AccoutFile, "r+") as f:
             users=json.load(f)
             if name in users:
                 msg="账号已存在,请登录"
@@ -75,13 +78,13 @@ class User(object):
         update_flag=False
         msg=""
 
-        with open("users.txt","r+") as f:
+        with open(AccoutFile, "r+") as f:
             users=json.load(f)
             if not users:
                 msg="暂无账号数据，请先注册"
                 return update_flag,msg
-            try:
-                if name in users and users[name]["login_num"]<=3:
+            if name in users:
+                if  users[name]["login_num"]<=3:
                     if users[name]["pwd"]==old_pwd:
                         users[name]["pwd"]=new_pwd
                         update_flag=True
@@ -91,8 +94,9 @@ class User(object):
                         msg="账号或密码错误，修改失败"
                 else:
                     msg="你的账号已被锁定"
-            except KeyError:
-                msg="账号或密码错误，如无账号，请先注册"
+            else:
+                msg = "账号或密码错误，如无账号，请先注册"
+
             # 更新登录次数数据
             f.seek(0)
             f.truncate()
